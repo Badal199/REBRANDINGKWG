@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KWG HACK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #ff4081;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff4081, 0 0 20px #ff80ab;
+        }
+
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .period-display, .result-box {
+            border: 3px solid #ff4081;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+            background-color: #1e1e1e;
+        }
+
+        .result-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        #result {
+            font-size: 2rem;
+            color: #32cd32;
+            text-shadow: 0 0 10px #32cd32;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e1e1e;
+            border: 3px solid #ff4081;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 20px #ff4081;
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .popup h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ff4081;
+        }
+
+        .popup p {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+
+        .popup button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            color: #fff;
+            background-color: #ff4081;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .popup button:hover {
+            background-color: #ff80ab;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KWG HACK 101% </h1>
+        </header>
+
+        <div class="results-container">
+            <div class="period-display">
+                <p>Period Number: <span id="period1m">Loading...</span></p>
+                <p>Timer: <span id="timer1m">Loading...</span></p>
+            </div>
+            <div class="result-box">
+                <h2>Current Result</h2>
+                <p id="result">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Result Popup -->
+        <div id="result-popup" class="popup">
+            <h2>New Result</h2>
+            <p><strong>Period Number:</strong> <span id="popup-period">Loading...</span></p>
+            <p><strong>Result:</strong> <span id="popup-result">Loading...</span></p>
+            <button onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let timer1m = document.getElementById('timer1m');
+        let period1m = document.getElementById('period1m');
+        let resultDisplay = document.getElementById('result');
+        let popup = document.getElementById('result-popup');
+        let popupPeriod = document.getElementById('popup-period');
+        let popupResult = document.getElementById('popup-result');
+        const resultsPattern = ["SMALL", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG"];
+        let resultIndex = 0;
+        let lastPeriodNumber = "";
+
+        // Timer logic simulating Java behavior
+        setInterval(() => {
+            const now = new Date();
+            const options = { timeZone: "Asia/Kolkata" };
+            const localTime = new Intl.DateTimeFormat('en-US', options).format(now);
+            const datePart = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
+            const hh = now.getHours();
+            const mm = now.getMinutes();
+            const period = (hh * 60) + mm + 1;
+            const autoPeriod = datePart + period;
+            period1m.textContent = autoPeriod;
+
+            const seconds = now.getSeconds();
+            const remainingSeconds = 60 - seconds;
+            timer1m.textContent = `   00  :  ${remainingSeconds.toString().padStart(2, '0')}`.replaceAll(/(?<=\d)(?=\d)/g, " ");
+
+            if (seconds === 0 && autoPeriod !== lastPeriodNumber) {
+                const result = resultsPattern[resultIndex];
+                resultDisplay.textContent = result;
+                showPopup(autoPeriod, result);
+                resultIndex = (resultIndex + 1) % resultsPattern.length;
+                lastPeriodNumber = autoPeriod;
+            }
+        }, 1000);
+
+        // Show popup for new result
+        function showPopup(period, result) {
+            popupPeriod.textContent = period;
+            popupResult.textContent = result;
+            popup.style.display = "block";
+        }
+
+        // Close the popup
+        function closePopup() {
+            popup.style.display = "none";
+        }
+    </script>
+</body>
+</html>
